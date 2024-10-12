@@ -43,9 +43,10 @@ application {
     useJUnitPlatform()
 } */
 
-java {
+//is needed according to documentation, but everything works fine without it
+/* java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-}
+} */
 
 tasks.jar {
     manifest {
