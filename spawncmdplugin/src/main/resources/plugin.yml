@@ -6,6 +6,6 @@ author: Maloschnikow
 api-version: '1.21.1'
 
 commands:
-  command:
+  spawn:
     description: "Teleports the player back to spawn."
     usage: "/spawn"
