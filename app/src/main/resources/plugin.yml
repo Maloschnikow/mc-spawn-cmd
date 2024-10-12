@@ -1,0 +1,11 @@
+name: SpawnCMDPlugin
+version: 0.0.1
+main: io.papermc.spawncmdplugin.SpawnCMDPlugin
+description: Adds a "/spawn" command to teleport the player back to the spawn.
+author: Maaloschnikow
+api-version: '1.21.1'
+
+commands:
+  command:
+    description: "Teleports the player back to spawn."
+    usage: "/spawn"
