@@ -62,4 +62,5 @@ tasks {
     }
   }
 
+//According to documentation this should be here, but it throws an error
 //paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
