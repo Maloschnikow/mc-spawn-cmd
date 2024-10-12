@@ -1,6 +1,6 @@
 # mc-spawn-cmd
 
-The code and everything works when running ```gradle runServer```, but ```gradle run``` and ```gradle build``` etc. fail.
+The code and everything works when running ```./gradlew runServer```, but ```./gradlew run``` and ```./gradlew build``` etc. fail.
 Also the config for nix is kind of messed up right now and doesn't work as intended.
 
 ## Development
@@ -32,4 +32,4 @@ VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=fwcd.kotlin
 Select via the Nix Environment Selector the shell.nix and restart VSCodium. (F1 -> Nix-Env: Select environment -> shell.nix)
 
 #### Start a server for testing
-```gradle runServer```
+```./gradlew runServer```

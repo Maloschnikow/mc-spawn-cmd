@@ -9,12 +9,6 @@ in
 pkgs.mkShellNoCC {
 
   packages = with pkgs; [
-
-
     jdk 
-    (callPackage gradle-packages.gradle_7 {
-      java = jdk;
-    })
-
   ];
 }
