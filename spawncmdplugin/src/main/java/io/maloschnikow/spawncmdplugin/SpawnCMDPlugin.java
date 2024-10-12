@@ -1,4 +1,4 @@
-package io.papermc.spawncmdplugin;
+package io.maloschnikow.spawncmdplugin;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

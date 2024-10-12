@@ -1,8 +1,5 @@
 # mc-spawn-cmd
 
-The code and everything works when running ```./gradlew runServer```, but ```./gradlew run``` and ```./gradlew build``` etc. fail.
-Also the config for nix is kind of messed up right now and doesn't work as intended.
-
 ## Development
 
 ### VSCodium and NixOS
@@ -30,6 +27,12 @@ VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=fwcd.kotlin
 
 #### Setup
 Select via the Nix Environment Selector the shell.nix and restart VSCodium. (F1 -> Nix-Env: Select environment -> shell.nix)
+Enter a ```nix-shell``` and run ```./gradlew```
 
 #### Start a server for testing
-```./gradlew runServer```
+Run ```./gradlew runServer```. This task will fail.
+Edit the spawncmdplugin/run/eula.txt file: Change ```false``` to ```true```
+
+#### Build
+Run ```./gradlew build```.
+The built .jar file will be in spawncmdplugin/build/libs.

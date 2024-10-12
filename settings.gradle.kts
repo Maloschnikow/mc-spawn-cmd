@@ -8,4 +8,4 @@
  */
 
 rootProject.name = "mc-spawn-cmd"
-include("app")
+include("spawncmdplugin")

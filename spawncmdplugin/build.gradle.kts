@@ -35,7 +35,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("io.papermc.spawncmdplugin.SpawnCMDPlugin")
+    mainClass.set("io.maloschnikow.spawncmdplugin.SpawnCMDPlugin")
 }
 
 /* tasks.named<Test>("test") {
