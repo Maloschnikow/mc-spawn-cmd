@@ -6,28 +6,25 @@
 
 #### Required Extensions
 
-1) Name: Gradle for Java
-Id: vscjava.vscode-gradle
-Description: Manage Gradle Projects, run Gradle tasks and provide better Gradle file authoring experience in VS Code
-Version: 3.15.0
-Publisher: vscjava
-VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=vscjava.vscode-gradle
+1) Name: Language Support for Java(TM) by Red Hat
+Id: redhat.java
+Description: Java Linting, Intellisense, formatting, refactoring, Maven/Gradle support and more...
+Version: 1.35.1
+Publisher: redhat
+VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=redhat.java
 2) Name: Nix Environment Selector
 Id: arrterian.nix-env-selector
 Description: Allows switch environment for Visual Studio Code and extensions based on Nix config file.
 Version: 1.0.11
 Publisher: arrterian
 VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=arrterian.nix-env-selector
-3) Name: Kotlin
-Id: fwcd.kotlin
-Description: Smart code completion, debugging, linting, syntax highlighting and more for Kotlin
-Version: 0.2.35
-Publisher: fwcd
-VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=fwcd.kotlin
+
 
 #### Setup
 Select via the Nix Environment Selector the shell.nix and restart VSCodium. (F1 -> Nix-Env: Select environment -> shell.nix)
-Enter a ```nix-shell``` and run ```./gradlew```
+Enter a ```nix-shell``` and run ```./gradlew```.
+
+To get the java language support to work you need to run echo ```$JAVA_HOME``` inside the nix shell, copy the output string and paste it into .vscode/settings.json under ```java.jdt.ls.java.home```.
 
 #### Start a server for testing
 Run ```./gradlew runServer```. This task will fail.
