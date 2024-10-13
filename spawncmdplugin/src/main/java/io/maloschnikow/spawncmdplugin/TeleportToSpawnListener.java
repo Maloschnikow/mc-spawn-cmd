@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class TeleportToSpawnListener implements Listener {
 
-    SpawnCommand spawnCommand;
+    private final SpawnCommand spawnCommand;
     
     public TeleportToSpawnListener(SpawnCommand spawnCommand) {
         this.spawnCommand = spawnCommand;

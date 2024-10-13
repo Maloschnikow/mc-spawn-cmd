@@ -1,0 +1,11 @@
+# Specifies coordinates of the spawn
+# if not set the "vanilla" world spawn coordinates will be used
+# yaw: -180.0 to 179.9
+# pitch: -90 to 90
+#
+spawn-coordinates:
+  x: 0
+  y: 146
+  z: 0
+  yaw: -180
+  pitch: -90 

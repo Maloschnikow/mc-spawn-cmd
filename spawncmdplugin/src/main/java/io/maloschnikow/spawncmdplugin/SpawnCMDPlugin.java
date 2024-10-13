@@ -12,6 +12,8 @@ public class SpawnCMDPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        saveDefaultConfig();
         
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {

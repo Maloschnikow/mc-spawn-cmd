@@ -27,7 +27,7 @@ public class SpawnCommand implements BasicCommand {
     private final Long COOLDOWN_TIME_SEC = 60L;
     private final int FAIL_PROBABILITY = 1000; // 1 to x (e.g. 1 to 1000) (kind of)
     private final long TELEPORT_DELAY_SEC = 6;
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public SpawnCommand(Plugin plugin) {
 
@@ -51,7 +51,15 @@ public class SpawnCommand implements BasicCommand {
         Player player = (Player)stack.getSender();
         UUID uuid = player.getUniqueId();
         World spawnWorld = player.getServer().getWorld("world");
-        Location spawnLocation = spawnWorld.getSpawnLocation();
+        Location vanillaSpawnLocation = spawnWorld.getSpawnLocation();
+        
+        double x = plugin.getConfig().getDouble("spawn-coordinates.x", vanillaSpawnLocation.getX());
+        double y = plugin.getConfig().getDouble("spawn-coordinates.y", vanillaSpawnLocation.getY());
+        double z = plugin.getConfig().getDouble("spawn-coordinates.z", vanillaSpawnLocation.getZ());
+        float yaw = (float) plugin.getConfig().getDouble("spawn-coordinates.yaw", (double) vanillaSpawnLocation.getYaw());
+        float pitch = (float) plugin.getConfig().getDouble("spawn-coordinates.pitch", (double) vanillaSpawnLocation.getPitch());
+
+        Location spawnLocation = new Location(spawnWorld, x, y, z, yaw, pitch);
 
         //Check cooldown
         Long lastUse = playerLastUse.get(uuid);
