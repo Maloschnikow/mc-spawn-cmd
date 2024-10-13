@@ -1,5 +1,6 @@
 package io.maloschnikow.spawncmdplugin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -7,12 +8,12 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import org.jetbrains.annotations.NotNull;
 
 import io.papermc.paper.command.brigadier.BasicCommand;
@@ -20,15 +21,23 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 public class SpawnCommand implements BasicCommand {
 
+
+    private Dictionary<UUID, BukkitRunnable> playerIssuedTeleports;
     private Dictionary<UUID, Long> playerLastUse; //Holds unix time in seconds of the last command use of each player
     private final Long COOLDOWN_TIME_SEC = 60L;
     private final int FAIL_PROBABILITY = 1000; // 1 to x (e.g. 1 to 1000) (kind of)
     private final long TELEPORT_DELAY_SEC = 6;
+    private Plugin plugin;
 
-    public SpawnCommand() {
+    public SpawnCommand(Plugin plugin) {
 
         playerLastUse = new Hashtable<>();
+        playerIssuedTeleports = new Hashtable<>();
+        this.plugin = plugin;
+    }
 
+    public Dictionary<UUID, BukkitRunnable> getPlayerIssuedTeleports() {
+        return playerIssuedTeleports;
     }
 
     @Override
@@ -53,23 +62,28 @@ public class SpawnCommand implements BasicCommand {
             return;
         }
 
-        //Sets date and time of command use
-        this.playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis() / 1000L));
-
         //Decides on randomness if player is teleported
         Random rand = new Random();
         int n = rand.nextInt(FAIL_PROBABILITY + 1);
         if (n > 0) {
             player.sendRichMessage("<green>Du wirst in <bold><dark_green>" + TELEPORT_DELAY_SEC +"</dark_green></bold> Sekunden teleportiert.</green>");
-            
+
             //Teleport player with delay
-            final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-            executorService.schedule(new Runnable() {
+
+            BukkitRunnable teleportRunnable = new BukkitRunnable() {
+
                 @Override
                 public void run() {
                     player.teleportAsync(spawnLocation);
+                    playerIssuedTeleports.remove(uuid);
+                    //Sets date and time of command use
+                    playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis() / 1000L));
                 }
-            }, TELEPORT_DELAY_SEC, TimeUnit.SECONDS);
+            };
+            Bukkit.getPluginManager().registerEvents(new TeleportToSpawnListener(this), plugin); //do listeners get destroyed? -> of not this could lead to performance issues
+
+            playerIssuedTeleports.put(uuid, teleportRunnable);
+            teleportRunnable.runTaskLater(this.plugin, 180);
 
         }
         else {
