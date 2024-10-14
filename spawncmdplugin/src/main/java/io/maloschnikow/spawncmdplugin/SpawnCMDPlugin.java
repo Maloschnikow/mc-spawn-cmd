@@ -19,13 +19,23 @@ public class SpawnCMDPlugin extends JavaPlugin {
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
-            commands.register("spawn", new SpawnCommand(this));
+
+            // Register /spawn command
+            commands.register(
+                Commands.literal("spawn")
+                    .executes(new SpawnCommand(this))
+                .build(),
+                "Teleports the player back to spawn."
+            );
+
+            // Register /setspawnlocation command
             commands.register(
                 Commands.literal("setspawnlocation")
                 .then(
                     Commands.argument("coordinates", ArgumentTypes.finePosition())
                         .executes(new SetSpawnLocationCommand(this))
-                ).build()
+                ).build(),
+                "Set the spawn location which should be used by this plugin."
             );
         });
     }

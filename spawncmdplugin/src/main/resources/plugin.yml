@@ -5,15 +5,6 @@ description: Adds a "/spawn" command to teleport the player back to the spawn.
 author: Maloschnikow
 api-version: '1.21.1'
 
-commands:
-  spawn:
-    description: "Teleports the player back to spawn."
-    usage: "/spawn"
-
-  setspawnlocation:
-    description: "Set the spawn location which should be used by this plugin."
-    usage: "/setspawnlocation <x> <y> <z>"
-
 permissions:
   permissions.setspawnlocation:
     description: "Allows someone to use the /setspawnlocation command."

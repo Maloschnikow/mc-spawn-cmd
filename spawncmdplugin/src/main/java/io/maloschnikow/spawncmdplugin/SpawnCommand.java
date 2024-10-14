@@ -14,12 +14,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import org.jetbrains.annotations.NotNull;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 
-public class SpawnCommand implements BasicCommand {
+public class SpawnCommand implements Command<CommandSourceStack> {
 
 
     private Dictionary<UUID, BukkitRunnable> playerIssuedTeleports;
@@ -56,12 +57,14 @@ public class SpawnCommand implements BasicCommand {
     }
 
     @Override
-    public void execute(@NotNull CommandSourceStack stack, @NotNull String[] args) {
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+
+        CommandSourceStack stack = context.getSource();
 
         // Check if sender is a player
         CommandSender sender = stack.getSender();
         if (!(sender instanceof Player)) {
-            return;
+            return 0;
         }
 
         // Get player and world info
@@ -71,7 +74,7 @@ public class SpawnCommand implements BasicCommand {
         // Check if player has already issued a teleport
         if (playerIssuedTeleports.get(uuid) != null) {
             player.sendRichMessage(this.TELEPORT_ALREADY_ISSUED_MSG);
-            return;
+            return Command.SINGLE_SUCCESS;
         }
         
         // Check cooldown
@@ -80,7 +83,7 @@ public class SpawnCommand implements BasicCommand {
         if ((lastUse != null) && ( (currentTime - lastUse) < (this.COOLDOWN_TIME_SEC * 1000))) {
             Long remainingTime = (this.COOLDOWN_TIME_SEC) - ((currentTime - lastUse) / 1000);
             player.sendRichMessage(this.TELEPORT_COOLDOWN_MSG.replace("%remainingTime%", remainingTime.toString()));
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         // Determine spawn location
@@ -123,5 +126,6 @@ public class SpawnCommand implements BasicCommand {
         else {
             player.sendRichMessage(this.TELEPORT_RANDOM_FAIL_MSG);
         }
+        return Command.SINGLE_SUCCESS;
     }
 }
