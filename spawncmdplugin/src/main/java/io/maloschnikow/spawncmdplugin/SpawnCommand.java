@@ -24,9 +24,9 @@ public class SpawnCommand implements BasicCommand {
 
     private Dictionary<UUID, BukkitRunnable> playerIssuedTeleports;
     private Dictionary<UUID, Long> playerLastUse; // Holds unix time of the last command use of each player
-    private final Long COOLDOWN_TIME_SEC = 60L;
-    private final int FAIL_PROBABILITY = 1000; // 1 to x (e.g. 1 to 1000) (kind of)
-    private final long TELEPORT_DELAY_TICKS = 120;
+    private final Long COOLDOWN_TIME_SEC;
+    private final int FAIL_PROBABILITY; // 1 to x (e.g. 1 to 1000) (kind of)
+    private final long TELEPORT_DELAY_TICKS;
     private final Plugin plugin;
 
     public SpawnCommand(Plugin plugin) {
@@ -34,6 +34,9 @@ public class SpawnCommand implements BasicCommand {
         playerLastUse = new Hashtable<>();
         playerIssuedTeleports = new Hashtable<>();
         this.plugin = plugin;
+        this.COOLDOWN_TIME_SEC = Long.valueOf(plugin.getConfig().getLong("cooldown-seconds", 60));
+        this.TELEPORT_DELAY_TICKS = plugin.getConfig().getInt("delay-ticks", 200);
+        this.FAIL_PROBABILITY = plugin.getConfig().getInt("fail-probability", 0);
     }
 
     public Dictionary<UUID, BukkitRunnable> getPlayerIssuedTeleports() {

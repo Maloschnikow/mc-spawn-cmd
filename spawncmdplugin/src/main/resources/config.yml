@@ -1,11 +1,36 @@
+# Note on "defaults to":
+# The value specified will be applied, if the plugin can't find the value in this config file.
+# This happens when the values are set as comment, which is done with a "#" in front of the line.
+# This can be used to load the default values.
+
+
 # Specifies coordinates of the spawn
-# if not set the "vanilla" world spawn coordinates will be used
-# yaw: -180.0 to 179.9
-# pitch: -90 to 90
+# defaults to the "vanilla" world spawn coordinates
+# yaw ranges from -180.0 to 179.9
+# pitch ranges from -90 (up) to 90 (down)
 #
-spawn-coordinates:
-  x: 0
-  y: 146
-  z: 0
-  yaw: -180
-  pitch: -90 
+#spawn-coordinates:
+#  x: 0
+#  y: 146
+#  z: 0
+#  yaw: -180
+#  pitch: -90 
+
+
+# Times
+#
+# Cooldown in seconds: How long must the player wait before being able to run the /spawn command again
+# defaults to 60
+cooldown-seconds: 60
+
+# Teleport delay: The amount of time a player has to wait before they get teleported.
+# Note that the unit is ticks
+# Normally the game runs on 20 ticks a second, so 120 ticks are 6 seconds.
+# defaults to 200 (10 seconds)
+delay-ticks: 200
+
+
+# Fail probability
+# With a probability of 1 to x (e.g. 1 to 1000) the /spawn command will not teleport the player.
+# defaults to 0 (Note that this value defaults to 0, but is set to 1000 in the default config)
+fail-probability: 1000
