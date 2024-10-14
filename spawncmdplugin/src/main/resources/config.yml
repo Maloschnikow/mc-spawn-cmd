@@ -5,16 +5,16 @@
 
 
 # Specifies coordinates of the spawn
-# defaults to the "vanilla" world spawn coordinates
-# yaw ranges from -180.0 to 179.9
+# yaw ranges from -180.0 to 179.9 (-180 is north, 0 is south, 90 is west, -90 is east)
 # pitch ranges from -90 (up) to 90 (down)
+# defaults to the "vanilla" world spawn coordinates
 #
-#spawn-coordinates:
-#  x: 0.0
-#  y: 146.0
-#  z: 0.0
-#  yaw: -180
-#  pitch: -90 
+spawn-coordinates:
+  x: 0.0
+  y: 200.0
+  z: 0.0
+  yaw: 0
+  pitch: 0
 
 
 # Times
