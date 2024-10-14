@@ -25,31 +25,56 @@ public class SpawnCommand implements Command<CommandSourceStack> {
 
     private Dictionary<UUID, BukkitRunnable> playerIssuedTeleports;
     private Dictionary<UUID, Long> playerLastUse; // Holds unix time of the last command use of each player
-    private final Long COOLDOWN_TIME_SEC;
-    private final int FAIL_PROBABILITY; // 1 to x (e.g. 1 to 1000) (kind of)
-    private final long TELEPORT_DELAY_TICKS;
     private final Plugin plugin;
 
-    public final String TELEPORT_CANCELLED_MSG;
-    public final String TELEPORT_ALREADY_ISSUED_MSG;
-    public final String TELEPORT_COOLDOWN_MSG;
-    public final String TELEPORT_PROMISE_MSG;
-    public final String TELEPORT_RANDOM_FAIL_MSG;
+    // Vars for configuration
+    // Vaalues
+    private final Long   COOLDOWN_TIME_SEC;
+    private final int    FAIL_PROBABILITY; // 1 to x (e.g. 1 to 1000) (kind of)
+    private final long   TELEPORT_DELAY_TICKS;
+
+    // Messages
+    public final String  TELEPORT_CANCELLED_MSG;
+    public final String  TELEPORT_ALREADY_ISSUED_MSG;
+    public final String  TELEPORT_COOLDOWN_MSG;
+    public final String  TELEPORT_PROMISE_MSG;
+    public final String  TELEPORT_RANDOM_FAIL_MSG;
+
+    // Sounds
+    public final boolean SOUNDS_ENABLED;
+    public final String  TELEPORT_COOLDOWN_SOUND;
+    public final String  TELEPORT_PROMISE_SOUND;
+    public final String  TELEPORT_DONE_SOUND;
+    public final String  TELEPORT_CANCELLED_SOUND;
 
     public SpawnCommand(Plugin plugin) {
 
         playerLastUse = new Hashtable<>();
         playerIssuedTeleports = new Hashtable<>();
         this.plugin = plugin;
-        this.COOLDOWN_TIME_SEC = Long.valueOf(plugin.getConfig().getLong("cooldown-seconds", 60));
-        this.TELEPORT_DELAY_TICKS = plugin.getConfig().getInt("delay-ticks", 200);
-        this.FAIL_PROBABILITY = plugin.getConfig().getInt("fail-probability", 0);
 
-        this.TELEPORT_CANCELLED_MSG = plugin.getConfig().getString("teleport-cancelled-message", "<red>Teleportation aborted, because of unexpected movement.</red>");
+        // Load configuration
+        // Values
+        this.COOLDOWN_TIME_SEC           = Long.valueOf(plugin.getConfig().getLong("cooldown-seconds", 60));
+        this.TELEPORT_DELAY_TICKS        = plugin.getConfig().getInt("delay-ticks",                    200);
+        this.FAIL_PROBABILITY            = plugin.getConfig().getInt("fail-probability",               0);
+
+        // Messages
+        this.TELEPORT_CANCELLED_MSG      = plugin.getConfig().getString("teleport-cancelled-message",      "<red>Teleportation aborted, because of unexpected movement.</red>");
         this.TELEPORT_ALREADY_ISSUED_MSG = plugin.getConfig().getString("teleport-already-issued-message", "<yellow>You will be teleported soon, please standby.</yellow>");
-        this.TELEPORT_COOLDOWN_MSG = plugin.getConfig().getString("teleport-cooldown-message", "<red>You'll have to wait <bold><dark_red>%remainingTime%</dark_red></bold> seconds until you can run this command again.</red>");
-        this.TELEPORT_PROMISE_MSG = plugin.getConfig().getString("teleport-promise-message", "<green>You will be teleported in <bold><dark_green>%delay%</dark_green></bold> seconds.</green>");
-        this.TELEPORT_RANDOM_FAIL_MSG = plugin.getConfig().getString("teleport-random-fail-message", "<red>Not today.</red>");
+        this.TELEPORT_COOLDOWN_MSG       = plugin.getConfig().getString("teleport-cooldown-message",       "<red>You'll have to wait <bold><dark_red>%remainingTime%</dark_red></bold> seconds until you can run this command again.</red>");
+        this.TELEPORT_PROMISE_MSG        = plugin.getConfig().getString("teleport-promise-message",        "<green>You will be teleported in <bold><dark_green>%delay%</dark_green></bold> seconds.</green>");
+        this.TELEPORT_RANDOM_FAIL_MSG    = plugin.getConfig().getString("teleport-random-fail-message",    "<red>Not today.</red>");
+
+        // Sounds
+        this.SOUNDS_ENABLED              = plugin.getConfig().getBoolean("sounds-enabled", true);
+
+        this.TELEPORT_COOLDOWN_SOUND     = plugin.getConfig().getString("teleport-cooldown-sound",  "entity.player.big_fall");
+        this.TELEPORT_PROMISE_SOUND      = plugin.getConfig().getString("teleport-promise-sound",   "block.portal.ambient");
+        this.TELEPORT_DONE_SOUND         = plugin.getConfig().getString("teleport-done-sound",      "entity.player.levelup");
+        this.TELEPORT_CANCELLED_SOUND    = plugin.getConfig().getString("teleport-cancelled-sound", "entity.player.big_fall");
+
+        
     }
 
     public Dictionary<UUID, BukkitRunnable> getPlayerIssuedTeleports() {
@@ -83,6 +108,9 @@ public class SpawnCommand implements Command<CommandSourceStack> {
         if ((lastUse != null) && ( (currentTime - lastUse) < (this.COOLDOWN_TIME_SEC * 1000))) {
             Long remainingTime = (this.COOLDOWN_TIME_SEC) - ((currentTime - lastUse) / 1000);
             player.sendRichMessage(this.TELEPORT_COOLDOWN_MSG.replace("%remainingTime%", remainingTime.toString()));
+
+            if(SOUNDS_ENABLED) { player.playSound(player, this.TELEPORT_COOLDOWN_SOUND, 1.0f, 1.0f); }
+
             return Command.SINGLE_SUCCESS;
         }
 
@@ -115,7 +143,11 @@ public class SpawnCommand implements Command<CommandSourceStack> {
                         spawnLocation.setYaw(player.getYaw());
                         spawnLocation.setPitch(player.getPitch());
                     }
+
                     player.teleportAsync(spawnLocation);
+
+                    if(SOUNDS_ENABLED) { player.playSound(player, TELEPORT_DONE_SOUND, 1.0f, 1.0f); }
+                    
                     playerIssuedTeleports.remove(uuid);
                     // Sets date and time of command use
                     playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis()));
@@ -123,12 +155,15 @@ public class SpawnCommand implements Command<CommandSourceStack> {
             };
             Bukkit.getPluginManager().registerEvents(new TeleportToSpawnListener(this), plugin); //do listeners get destroyed? -> of not this could lead to performance issues
 
+            if(SOUNDS_ENABLED) { player.playSound(player, this.TELEPORT_PROMISE_SOUND, 1.0f, 1.0f); }
+
             playerIssuedTeleports.put(uuid, teleportRunnable);
             teleportRunnable.runTaskLater(this.plugin, this.TELEPORT_DELAY_TICKS);
 
         }
         else {
             player.sendRichMessage(this.TELEPORT_RANDOM_FAIL_MSG);
+            if(this.SOUNDS_ENABLED) { player.playSound(player, this.TELEPORT_CANCELLED_SOUND, 1.0f, 1.0f); }
         }
         return Command.SINGLE_SUCCESS;
     }
