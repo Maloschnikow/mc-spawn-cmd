@@ -9,3 +9,12 @@ commands:
   spawn:
     description: "Teleports the player back to spawn."
     usage: "/spawn"
+
+  setspawnlocation:
+    description: "Set the spawn location which should be used by this plugin."
+    usage: "/setspawnlocation <x> <y> <z> <yaw> <pitch>"
+
+permissions:
+  permissions.setspawnlocation:
+    description: "Allows someone to use the /setspawnlocation command."
+    default: op

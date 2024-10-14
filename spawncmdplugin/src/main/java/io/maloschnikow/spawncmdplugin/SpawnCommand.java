@@ -57,6 +57,8 @@ public class SpawnCommand implements BasicCommand {
 
     @Override
     public void execute(@NotNull CommandSourceStack stack, @NotNull String[] args) {
+
+        // Check if sender is a player
         CommandSender sender = stack.getSender();
         if (!(sender instanceof Player)) {
             return;

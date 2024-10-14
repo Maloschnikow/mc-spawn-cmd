@@ -19,6 +19,7 @@ public class SpawnCMDPlugin extends JavaPlugin {
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Commands commands = event.registrar();
             commands.register("spawn", new SpawnCommand(this));
+            commands.register("setspawnlocation", new SetSpawnLocationCommand(this));
         });
     }
 

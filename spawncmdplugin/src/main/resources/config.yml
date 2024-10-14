@@ -10,9 +10,9 @@
 # pitch ranges from -90 (up) to 90 (down)
 #
 #spawn-coordinates:
-#  x: 0
-#  y: 146
-#  z: 0
+#  x: 0.0
+#  y: 146.0
+#  z: 0.0
 #  yaw: -180
 #  pitch: -90 
 
