@@ -29,6 +29,12 @@ public class SpawnCommand implements BasicCommand {
     private final long TELEPORT_DELAY_TICKS;
     private final Plugin plugin;
 
+    public final String TELEPORT_CANCELLED_MSG;
+    public final String TELEPORT_ALREADY_ISSUED_MSG;
+    public final String TELEPORT_COOLDOWN_MSG;
+    public final String TELEPORT_PROMISE_MSG;
+    public final String TELEPORT_RANDOM_FAIL_MSG;
+
     public SpawnCommand(Plugin plugin) {
 
         playerLastUse = new Hashtable<>();
@@ -37,6 +43,12 @@ public class SpawnCommand implements BasicCommand {
         this.COOLDOWN_TIME_SEC = Long.valueOf(plugin.getConfig().getLong("cooldown-seconds", 60));
         this.TELEPORT_DELAY_TICKS = plugin.getConfig().getInt("delay-ticks", 200);
         this.FAIL_PROBABILITY = plugin.getConfig().getInt("fail-probability", 0);
+
+        this.TELEPORT_CANCELLED_MSG = plugin.getConfig().getString("teleport-cancelled-message", "<red>Teleportation aborted, because of unexpected movement.</red>");
+        this.TELEPORT_ALREADY_ISSUED_MSG = plugin.getConfig().getString("teleport-already-issued-message", "<yellow>You will be teleported soon, please standby.</yellow>");
+        this.TELEPORT_COOLDOWN_MSG = plugin.getConfig().getString("teleport-cooldown-message", "<red>You'll have to wait <bold><dark_red>%remainingTime%</dark_red></bold> seconds until you can run this command again.</red>");
+        this.TELEPORT_PROMISE_MSG = plugin.getConfig().getString("teleport-promise-message", "<green>You will be teleported in <bold><dark_green>%delay%</dark_green></bold> seconds.</green>");
+        this.TELEPORT_RANDOM_FAIL_MSG = plugin.getConfig().getString("teleport-random-fail-message", "<red>Not today.</red>");
     }
 
     public Dictionary<UUID, BukkitRunnable> getPlayerIssuedTeleports() {
@@ -54,17 +66,18 @@ public class SpawnCommand implements BasicCommand {
         Player player = (Player)stack.getSender();
         UUID uuid = player.getUniqueId();
         
+        // Check if player has already issued a teleport
         if (playerIssuedTeleports.get(uuid) != null) {
-            player.sendRichMessage("<yellow>Du wirst gleich teleportiert, bitte habe etwas Geduld.</yellow>");
+            player.sendRichMessage(this.TELEPORT_ALREADY_ISSUED_MSG);
             return;
         }
         
         // Check cooldown
         Long lastUse = playerLastUse.get(uuid);
         Long currentTime = Long.valueOf(System.currentTimeMillis());
-        if ((lastUse != null) && ( (currentTime - lastUse) < (COOLDOWN_TIME_SEC * 1000))) {
-            Long remainingTime = (COOLDOWN_TIME_SEC) - ((currentTime - lastUse) / 1000);
-            player.sendRichMessage("<red>Warte noch <bold><dark_red>" + remainingTime.toString() + "</dark_red></bold> Sekunden.</red>");
+        if ((lastUse != null) && ( (currentTime - lastUse) < (this.COOLDOWN_TIME_SEC * 1000))) {
+            Long remainingTime = (this.COOLDOWN_TIME_SEC) - ((currentTime - lastUse) / 1000);
+            player.sendRichMessage(this.TELEPORT_COOLDOWN_MSG.replace("%remainingTime%", remainingTime.toString()));
             return;
         }
 
@@ -83,9 +96,9 @@ public class SpawnCommand implements BasicCommand {
 
         // Decides on randomness if player is teleported
         Random rand = new Random();
-        int n = rand.nextInt(FAIL_PROBABILITY + 1);
+        int n = rand.nextInt(this.FAIL_PROBABILITY + 1);
         if (n > 0) {
-            player.sendRichMessage("<green>Du wirst in <bold><dark_green>" + TELEPORT_DELAY_TICKS / 20 +"</dark_green></bold> Sekunden teleportiert.</green>");
+            player.sendRichMessage(this.TELEPORT_PROMISE_MSG.replace("%delay%",Long.valueOf( this.TELEPORT_DELAY_TICKS / 20).toString()));
 
             // Teleport player with delay
 
@@ -102,11 +115,11 @@ public class SpawnCommand implements BasicCommand {
             Bukkit.getPluginManager().registerEvents(new TeleportToSpawnListener(this), plugin); //do listeners get destroyed? -> of not this could lead to performance issues
 
             playerIssuedTeleports.put(uuid, teleportRunnable);
-            teleportRunnable.runTaskLater(this.plugin, TELEPORT_DELAY_TICKS);
+            teleportRunnable.runTaskLater(this.plugin, this.TELEPORT_DELAY_TICKS);
 
         }
         else {
-            player.sendRichMessage("<red>Ne, heute nicht.</red>");
+            player.sendRichMessage(this.TELEPORT_RANDOM_FAIL_MSG);
         }
     }
 }

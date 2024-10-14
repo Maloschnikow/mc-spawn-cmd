@@ -24,6 +24,6 @@ public class TeleportToSpawnListener implements Listener {
         }
         l.cancel();
         spawnCommand.getPlayerIssuedTeleports().remove(uuid);
-        event.getPlayer().sendRichMessage("<red>Teleportation abgebrochen, aufgrund von unvorhergesehener Bewegung.</red>");
+        event.getPlayer().sendRichMessage(this.spawnCommand.TELEPORT_CANCELLED_MSG);
     }
 }

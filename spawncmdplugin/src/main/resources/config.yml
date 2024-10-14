@@ -34,3 +34,29 @@ delay-ticks: 200
 # With a probability of 1 to x (e.g. 1 to 1000) the /spawn command will not teleport the player.
 # defaults to 0 (Note that this value defaults to 0, but is set to 1000 in the default config)
 fail-probability: 1000
+
+
+# Messages
+# The messages have this format: https://docs.advntr.dev/minimessage/format.html
+#
+# Teleport cancelled message will be sent when the player moves and the teleport gets cancelled.
+# defaults to "<red>Teleportation aborted, because of unexpected movement.</red>"
+teleport-cancelled-message: "<red>Teleportation abgebrochen, aufgrund von unvorhergesehener Bewegung.</red>"
+
+# Teleport already issued message will be sent when the player runs the /spawn command again even though they already wait to be teleported.
+# defaults to "<yellow>You will be teleported soon, please standby.</yellow>"
+teleport-already-issued-message: "<yellow>Du wirst gleich teleportiert, bitte habe etwas Geduld.</yellow>"
+
+# Teleport cooldown message will be sent when the player runs /spawn but is still on cooldown
+# You can use "%remainingTime%" to insert the time they have to wait in seconds
+# defaults to "<red>You'll have to wait <bold><dark_red>%remainingTime%</dark_red></bold> seconds until you can run this command again.</red>"
+teleport-cooldown-message: "<red>Warte noch <bold><dark_red>%remainingTime%</dark_red></bold> Sekunden.</red>"
+
+# Teleport promise message will be sent when the player /spawn and will be teleported
+# You can use "%delay%" to insert the time after they get deleported in seconds
+# defaults to "<green>You will be teleported in <bold><dark_green>%delay%</dark_green></bold> seconds.</green>"
+teleport-promise-message: "<green>Du wirst in <bold><dark_green>%delay%</dark_green></bold> Sekunden teleportiert.</green>"
+
+# Teleport random fail message will be sent when the spawn issue fails randomly (see fail-probability)
+# defaults to: "<red>Not today.</red>"
+teleport-random-fail-message: "<red>Ne, heute nicht.</red>"
