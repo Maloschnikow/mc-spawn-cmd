@@ -23,7 +23,7 @@ public class SpawnCommand implements BasicCommand {
 
 
     private Dictionary<UUID, BukkitRunnable> playerIssuedTeleports;
-    private Dictionary<UUID, Long> playerLastUse; //Holds unix time of the last command use of each player
+    private Dictionary<UUID, Long> playerLastUse; // Holds unix time of the last command use of each player
     private final Long COOLDOWN_TIME_SEC = 60L;
     private final int FAIL_PROBABILITY = 1000; // 1 to x (e.g. 1 to 1000) (kind of)
     private final long TELEPORT_DELAY_TICKS = 120;
@@ -47,21 +47,16 @@ public class SpawnCommand implements BasicCommand {
             return;
         }
 
-        //Get player and world info
+        // Get player and world info
         Player player = (Player)stack.getSender();
         UUID uuid = player.getUniqueId();
-        World spawnWorld = player.getServer().getWorld("world");
-        Location vanillaSpawnLocation = spawnWorld.getSpawnLocation();
         
-        double x = plugin.getConfig().getDouble("spawn-coordinates.x", vanillaSpawnLocation.getX());
-        double y = plugin.getConfig().getDouble("spawn-coordinates.y", vanillaSpawnLocation.getY());
-        double z = plugin.getConfig().getDouble("spawn-coordinates.z", vanillaSpawnLocation.getZ());
-        float yaw = (float) plugin.getConfig().getDouble("spawn-coordinates.yaw", (double) vanillaSpawnLocation.getYaw());
-        float pitch = (float) plugin.getConfig().getDouble("spawn-coordinates.pitch", (double) vanillaSpawnLocation.getPitch());
-
-        Location spawnLocation = new Location(spawnWorld, x, y, z, yaw, pitch);
-
-        //Check cooldown
+        if (playerIssuedTeleports.get(uuid) != null) {
+            player.sendRichMessage("<yellow>Du wirst gleich teleportiert, bitte habe etwas Geduld.</yellow>");
+            return;
+        }
+        
+        // Check cooldown
         Long lastUse = playerLastUse.get(uuid);
         Long currentTime = Long.valueOf(System.currentTimeMillis());
         if ((lastUse != null) && ( (currentTime - lastUse) < (COOLDOWN_TIME_SEC * 1000))) {
@@ -70,13 +65,26 @@ public class SpawnCommand implements BasicCommand {
             return;
         }
 
-        //Decides on randomness if player is teleported
+        // Determine spawn location
+        World spawnWorld = player.getServer().getWorld("world");
+        Location vanillaSpawnLocation = spawnWorld.getSpawnLocation();
+        // Read spawn location from config
+        // If a value is not defined in config, use the default world spawn value
+        double x = plugin.getConfig().getDouble("spawn-coordinates.x", vanillaSpawnLocation.getX());
+        double y = plugin.getConfig().getDouble("spawn-coordinates.y", vanillaSpawnLocation.getY());
+        double z = plugin.getConfig().getDouble("spawn-coordinates.z", vanillaSpawnLocation.getZ());
+        float yaw = (float) plugin.getConfig().getDouble("spawn-coordinates.yaw", (double) vanillaSpawnLocation.getYaw());
+        float pitch = (float) plugin.getConfig().getDouble("spawn-coordinates.pitch", (double) vanillaSpawnLocation.getPitch());
+
+        Location spawnLocation = new Location(spawnWorld, x, y, z, yaw, pitch);
+
+        // Decides on randomness if player is teleported
         Random rand = new Random();
         int n = rand.nextInt(FAIL_PROBABILITY + 1);
         if (n > 0) {
             player.sendRichMessage("<green>Du wirst in <bold><dark_green>" + TELEPORT_DELAY_TICKS / 20 +"</dark_green></bold> Sekunden teleportiert.</green>");
 
-            //Teleport player with delay
+            // Teleport player with delay
 
             BukkitRunnable teleportRunnable = new BukkitRunnable() {
 
@@ -84,7 +92,7 @@ public class SpawnCommand implements BasicCommand {
                 public void run() {
                     player.teleportAsync(spawnLocation);
                     playerIssuedTeleports.remove(uuid);
-                    //Sets date and time of command use
+                    // Sets date and time of command use
                     playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis()));
                 }
             };
