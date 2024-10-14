@@ -111,6 +111,10 @@ public class SpawnCommand implements Command<CommandSourceStack> {
 
                 @Override
                 public void run() {
+                    if (plugin.getConfig().getBoolean("keep-rotation", false)) {
+                        spawnLocation.setYaw(player.getYaw());
+                        spawnLocation.setPitch(player.getPitch());
+                    }
                     player.teleportAsync(spawnLocation);
                     playerIssuedTeleports.remove(uuid);
                     // Sets date and time of command use

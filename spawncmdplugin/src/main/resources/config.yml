@@ -16,6 +16,10 @@ spawn-coordinates:
   yaw: 0
   pitch: 0
 
+# If this is set to true yaw and pitch of spawn-coordinates will be ignored
+# The player keeps their rotation after being teleported
+# defaults to false
+keep-rotation: false
 
 # Times
 #
