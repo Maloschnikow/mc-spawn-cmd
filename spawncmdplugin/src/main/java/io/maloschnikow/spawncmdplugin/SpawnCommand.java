@@ -164,6 +164,7 @@ public class SpawnCommand implements Command<CommandSourceStack> {
         else {
             player.sendRichMessage(this.TELEPORT_RANDOM_FAIL_MSG);
             if(this.SOUNDS_ENABLED) { player.playSound(player, this.TELEPORT_CANCELLED_SOUND, 1.0f, 1.0f); }
+            playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis()));
         }
         return Command.SINGLE_SUCCESS;
     }
