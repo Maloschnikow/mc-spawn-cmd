@@ -23,10 +23,10 @@ public class SpawnCommand implements BasicCommand {
 
 
     private Dictionary<UUID, BukkitRunnable> playerIssuedTeleports;
-    private Dictionary<UUID, Long> playerLastUse; //Holds unix time in seconds of the last command use of each player
+    private Dictionary<UUID, Long> playerLastUse; //Holds unix time of the last command use of each player
     private final Long COOLDOWN_TIME_SEC = 60L;
     private final int FAIL_PROBABILITY = 1000; // 1 to x (e.g. 1 to 1000) (kind of)
-    private final long TELEPORT_DELAY_SEC = 6;
+    private final long TELEPORT_DELAY_TICKS = 120;
     private final Plugin plugin;
 
     public SpawnCommand(Plugin plugin) {
@@ -63,9 +63,9 @@ public class SpawnCommand implements BasicCommand {
 
         //Check cooldown
         Long lastUse = playerLastUse.get(uuid);
-        Long currentTime = Long.valueOf(System.currentTimeMillis() / 1000L);
-        if ((lastUse != null) && ( (currentTime - lastUse) < COOLDOWN_TIME_SEC)) {
-            Long remainingTime = COOLDOWN_TIME_SEC - (currentTime - lastUse);
+        Long currentTime = Long.valueOf(System.currentTimeMillis());
+        if ((lastUse != null) && ( (currentTime - lastUse) < (COOLDOWN_TIME_SEC * 1000))) {
+            Long remainingTime = (COOLDOWN_TIME_SEC) - ((currentTime - lastUse) / 1000);
             player.sendRichMessage("<red>Warte noch <bold><dark_red>" + remainingTime.toString() + "</dark_red></bold> Sekunden.</red>");
             return;
         }
@@ -74,7 +74,7 @@ public class SpawnCommand implements BasicCommand {
         Random rand = new Random();
         int n = rand.nextInt(FAIL_PROBABILITY + 1);
         if (n > 0) {
-            player.sendRichMessage("<green>Du wirst in <bold><dark_green>" + TELEPORT_DELAY_SEC +"</dark_green></bold> Sekunden teleportiert.</green>");
+            player.sendRichMessage("<green>Du wirst in <bold><dark_green>" + TELEPORT_DELAY_TICKS / 20 +"</dark_green></bold> Sekunden teleportiert.</green>");
 
             //Teleport player with delay
 
@@ -85,13 +85,13 @@ public class SpawnCommand implements BasicCommand {
                     player.teleportAsync(spawnLocation);
                     playerIssuedTeleports.remove(uuid);
                     //Sets date and time of command use
-                    playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis() / 1000L));
+                    playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis()));
                 }
             };
             Bukkit.getPluginManager().registerEvents(new TeleportToSpawnListener(this), plugin); //do listeners get destroyed? -> of not this could lead to performance issues
 
             playerIssuedTeleports.put(uuid, teleportRunnable);
-            teleportRunnable.runTaskLater(this.plugin, 180);
+            teleportRunnable.runTaskLater(this.plugin, TELEPORT_DELAY_TICKS);
 
         }
         else {
