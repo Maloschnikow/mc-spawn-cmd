@@ -18,6 +18,7 @@ spawn-coordinates:
 
 # If this is set to true yaw and pitch of spawn-coordinates will be ignored
 # The player keeps their rotation after being teleported
+# Note that this only has an effect on /spawn and does not affect tp-player-on-join
 # defaults to false
 keep-rotation: false
 
