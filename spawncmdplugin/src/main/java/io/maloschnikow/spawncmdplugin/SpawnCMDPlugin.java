@@ -17,7 +17,7 @@ public class SpawnCMDPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         SpawnCommand spawnCommand = new SpawnCommand(this);
-        getServer().getPluginManager().registerEvents(new TeleportToSpawnListener(spawnCommand), this);
+        getServer().getPluginManager().registerEvents(new TeleportToSpawnListener(this, spawnCommand), this);
         
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {

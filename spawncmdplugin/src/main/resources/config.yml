@@ -21,6 +21,10 @@ spawn-coordinates:
 # defaults to false
 keep-rotation: false
 
+# If this is set to true a player will be teleported to spawn right after they join
+# defaults to false
+tp-on-player-join: false
+
 # Times
 #
 # Cooldown in seconds: How long must the player wait before being able to run the /spawn command again

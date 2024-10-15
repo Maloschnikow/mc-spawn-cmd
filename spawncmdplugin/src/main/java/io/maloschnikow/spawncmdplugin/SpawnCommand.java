@@ -76,6 +76,20 @@ public class SpawnCommand implements Command<CommandSourceStack> {
         
     }
 
+    public Location getSpawnLocation(Plugin plugin, World spawnWorld) {
+        // Determine spawn location
+        Location vanillaSpawnLocation = spawnWorld.getSpawnLocation();
+        // Read spawn location from config
+        // If a value is not defined in config, use the default world spawn value
+        double x = plugin.getConfig().getDouble("spawn-coordinates.x", vanillaSpawnLocation.getX());
+        double y = plugin.getConfig().getDouble("spawn-coordinates.y", vanillaSpawnLocation.getY());
+        double z = plugin.getConfig().getDouble("spawn-coordinates.z", vanillaSpawnLocation.getZ());
+        float yaw = (float) plugin.getConfig().getDouble("spawn-coordinates.yaw", (double) vanillaSpawnLocation.getYaw());
+        float pitch = (float) plugin.getConfig().getDouble("spawn-coordinates.pitch", (double) vanillaSpawnLocation.getPitch());
+
+        return new Location(spawnWorld, x, y, z, yaw, pitch);
+    }
+
     public Dictionary<UUID, BukkitRunnable> getPlayerIssuedTeleports() {
         return playerIssuedTeleports;
     }
@@ -115,16 +129,7 @@ public class SpawnCommand implements Command<CommandSourceStack> {
 
         // Determine spawn location
         World spawnWorld = player.getServer().getWorld("world");
-        Location vanillaSpawnLocation = spawnWorld.getSpawnLocation();
-        // Read spawn location from config
-        // If a value is not defined in config, use the default world spawn value
-        double x = plugin.getConfig().getDouble("spawn-coordinates.x", vanillaSpawnLocation.getX());
-        double y = plugin.getConfig().getDouble("spawn-coordinates.y", vanillaSpawnLocation.getY());
-        double z = plugin.getConfig().getDouble("spawn-coordinates.z", vanillaSpawnLocation.getZ());
-        float yaw = (float) plugin.getConfig().getDouble("spawn-coordinates.yaw", (double) vanillaSpawnLocation.getYaw());
-        float pitch = (float) plugin.getConfig().getDouble("spawn-coordinates.pitch", (double) vanillaSpawnLocation.getPitch());
-
-        Location spawnLocation = new Location(spawnWorld, x, y, z, yaw, pitch);
+        Location spawnLocation = getSpawnLocation(this.plugin, spawnWorld);
 
         // Decides on randomness if player is teleported
         Random rand = new Random();
