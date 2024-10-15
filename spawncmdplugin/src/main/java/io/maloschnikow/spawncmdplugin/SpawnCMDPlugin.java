@@ -15,6 +15,9 @@ public class SpawnCMDPlugin extends JavaPlugin {
     public void onEnable() {
 
         saveDefaultConfig();
+
+        SpawnCommand spawnCommand = new SpawnCommand(this);
+        getServer().getPluginManager().registerEvents(new TeleportToSpawnListener(spawnCommand), this);
         
         LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
         manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
@@ -23,7 +26,7 @@ public class SpawnCMDPlugin extends JavaPlugin {
             // Register /spawn command
             commands.register(
                 Commands.literal("spawn")
-                    .executes(new SpawnCommand(this))
+                    .executes(spawnCommand)
                 .build(),
                 "Teleports the player back to spawn."
             );

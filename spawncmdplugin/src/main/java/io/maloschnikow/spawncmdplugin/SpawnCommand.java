@@ -1,6 +1,5 @@
 package io.maloschnikow.spawncmdplugin;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -153,7 +152,6 @@ public class SpawnCommand implements Command<CommandSourceStack> {
                     playerLastUse.put(uuid, Long.valueOf(System.currentTimeMillis()));
                 }
             };
-            Bukkit.getPluginManager().registerEvents(new TeleportToSpawnListener(this), plugin); //do listeners get destroyed? -> of not this could lead to performance issues
 
             if(SOUNDS_ENABLED) { player.playSound(player, this.TELEPORT_PROMISE_SOUND, 1.0f, 1.0f); }
 
