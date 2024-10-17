@@ -1,10 +1,14 @@
 package io.maloschnikow.spawncmdplugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.function.Predicate;
+
 import org.bukkit.plugin.Plugin;
 
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 
@@ -37,6 +41,7 @@ public class SpawnCMDPlugin extends JavaPlugin {
                 .then(
                     Commands.argument("coordinates", ArgumentTypes.finePosition())
                         .executes(new SetSpawnLocationCommand(this))
+                ).requires(new Permission("permissions.setspawnlocation")
                 ).build(),
                 "Set the spawn location which should be used by this plugin."
             );

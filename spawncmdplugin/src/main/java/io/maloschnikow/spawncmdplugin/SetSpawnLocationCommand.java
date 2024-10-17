@@ -1,7 +1,6 @@
 package io.maloschnikow.spawncmdplugin;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.mojang.brigadier.Command;
@@ -27,13 +26,6 @@ public class SetSpawnLocationCommand implements Command<CommandSourceStack> {
 
         // Check if sender is a player and if so check permission
         CommandSender sender = stack.getSender();
-        if(sender instanceof Player) {
-            Player p = (Player) sender;
-            if(!p.hasPermission("permissions.setspawnlocation")) {
-                p.sendPlainMessage("You don't have permission to run this command!");
-                return 0;
-            }
-        }
         
         FinePositionResolver pos = (FinePositionResolver) context.getArgument("coordinates", FinePositionResolver.class);
 
