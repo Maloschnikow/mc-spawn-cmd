@@ -2,13 +2,10 @@ package io.maloschnikow.spawncmdplugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.function.Predicate;
-
 import org.bukkit.plugin.Plugin;
 
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 
