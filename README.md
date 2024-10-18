@@ -25,7 +25,7 @@
 
 ### VSCodium and NixOS
 
-#### Required Extensions
+#### Recommended Extensions
 
 1. > Name: Language Support for Java(TM) by Red Hat
 Id: redhat.java
@@ -44,14 +44,15 @@ VS Marketplace Link: https://open-vsx.org/vscode/item?itemName=arrterian.nix-env
 
 #### Setup
 Select via the Nix Environment Selector the shell.nix and restart VSCodium. (<kbd>F1</kbd> &rarr; `Nix-Env: Select environment` &rarr; `shell.nix`)
-Enter a ```nix-shell``` and run ```./gradlew```.
+Enter a `nix-shell` and run `./gradlew`.
 
-To get the java language support to work you need to run echo ```$JAVA_HOME``` inside the nix shell, copy the output string and paste it into `.vscode/settings.json` under ```java.jdt.ls.java.home```.
+> [!NOTE]
+> To get the java language support to work you may need to run `echo $JAVA_HOME` inside the nix shell, copy the output string and paste it into `.vscode/settings.json` under `java.jdt.ls.java.home`.
 
 #### Start a server for testing
-Run ```./gradlew runServer```. This task will fail.
-Edit the `spawncmdplugin/run/eula.txt` file: Change ```false``` to ```true```
+Run `./gradlew runServer`. This task will fail.
+Edit the `spawncmdplugin/run/eula.txt` file: Change `false` to `true`
 
 #### Build
-Run ```./gradlew build```.
+Run `./gradlew build`.
 The built `.jar` file will be in `spawncmdplugin/build/libs`.

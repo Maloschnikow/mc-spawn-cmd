@@ -11,4 +11,5 @@ run
 bin
 
 # vscode stuff
-.vscode
+.vscode/*
+!.vscode/extensions.json
